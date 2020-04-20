@@ -18,6 +18,7 @@ PROTOBUF_C__BEGIN_DECLS
 typedef struct _DeviceInfo DeviceInfo;
 typedef struct _FileData FileData;
 typedef struct _VentData VentData;
+typedef struct _VentConfig VentConfig;
 typedef struct _VentRequest VentRequest;
 typedef struct _VentResponse VentResponse;
 
@@ -40,11 +41,20 @@ typedef enum _Command {
   COMMAND__CmdNone = 0,
   COMMAND__DeviceInfoRequest = 1,
   COMMAND__VentDataRequest = 2,
-  COMMAND__CheckFirmwareRequest = 3,
+  COMMAND__VentConfigRequest = 3,
   COMMAND__WriteFirmwareRequest = 4,
-  COMMAND__ReadFirmwareRequest = 5
+  COMMAND__ReadFirmwareRequest = 5,
+  COMMAND__WriteFileRequest = 6,
+  COMMAND__ReadFileRequest = 7
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(COMMAND)
 } Command;
+typedef enum _WorkingMode {
+  WORKING_MODE__CMV = 0,
+  WORKING_MODE__CPAP = 1,
+  WORKING_MODE__VAC = 2,
+  WORKING_MODE__TEST = 3
+    PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(WORKING_MODE)
+} WorkingMode;
 
 /* --- messages --- */
 
@@ -88,6 +98,16 @@ struct  _VentData
     , 0, 0, 0, 0 }
 
 
+struct  _VentConfig
+{
+  ProtobufCMessage base;
+  WorkingMode mode;
+};
+#define VENT_CONFIG__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&vent_config__descriptor) \
+    , WORKING_MODE__CMV }
+
+
 struct  _VentRequest
 {
   ProtobufCMessage base;
@@ -95,10 +115,13 @@ struct  _VentRequest
   char *access_key;
   FileData *read_firmware_request;
   FileData *write_firmware_request;
+  FileData *read_file_request;
+  FileData *write_file_request;
+  VentConfig *vent_config_request;
 };
 #define VENT_REQUEST__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&vent_request__descriptor) \
-    , COMMAND__CmdNone, (char *)protobuf_c_empty_string, NULL, NULL }
+    , COMMAND__CmdNone, (char *)protobuf_c_empty_string, NULL, NULL, NULL, NULL, NULL }
 
 
 struct  _VentResponse
@@ -107,12 +130,13 @@ struct  _VentResponse
   Status status;
   DeviceInfo *device_info_response;
   FileData *read_firmware_response;
+  FileData *read_file_response;
   size_t n_vent_data_response;
   VentData **vent_data_response;
 };
 #define VENT_RESPONSE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&vent_response__descriptor) \
-    , STATUS__Unknown, NULL, NULL, 0,NULL }
+    , STATUS__Unknown, NULL, NULL, NULL, 0,NULL }
 
 
 /* DeviceInfo methods */
@@ -172,6 +196,25 @@ VentData *
 void   vent_data__free_unpacked
                      (VentData *message,
                       ProtobufCAllocator *allocator);
+/* VentConfig methods */
+void   vent_config__init
+                     (VentConfig         *message);
+size_t vent_config__get_packed_size
+                     (const VentConfig   *message);
+size_t vent_config__pack
+                     (const VentConfig   *message,
+                      uint8_t             *out);
+size_t vent_config__pack_to_buffer
+                     (const VentConfig   *message,
+                      ProtobufCBuffer     *buffer);
+VentConfig *
+       vent_config__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   vent_config__free_unpacked
+                     (VentConfig *message,
+                      ProtobufCAllocator *allocator);
 /* VentRequest methods */
 void   vent_request__init
                      (VentRequest         *message);
@@ -221,6 +264,9 @@ typedef void (*FileData_Closure)
 typedef void (*VentData_Closure)
                  (const VentData *message,
                   void *closure_data);
+typedef void (*VentConfig_Closure)
+                 (const VentConfig *message,
+                  void *closure_data);
 typedef void (*VentRequest_Closure)
                  (const VentRequest *message,
                   void *closure_data);
@@ -236,9 +282,11 @@ typedef void (*VentResponse_Closure)
 extern const ProtobufCEnumDescriptor    transport__descriptor;
 extern const ProtobufCEnumDescriptor    status__descriptor;
 extern const ProtobufCEnumDescriptor    command__descriptor;
+extern const ProtobufCEnumDescriptor    working_mode__descriptor;
 extern const ProtobufCMessageDescriptor device_info__descriptor;
 extern const ProtobufCMessageDescriptor file_data__descriptor;
 extern const ProtobufCMessageDescriptor vent_data__descriptor;
+extern const ProtobufCMessageDescriptor vent_config__descriptor;
 extern const ProtobufCMessageDescriptor vent_request__descriptor;
 extern const ProtobufCMessageDescriptor vent_response__descriptor;
 

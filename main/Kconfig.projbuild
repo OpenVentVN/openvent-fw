@@ -1,0 +1,18 @@
+menu "OpenVent Configuration"
+
+config USE_SEC_1
+        bool
+        default y
+        prompt "Use Security Version 1"
+        help
+            Security version 1 used Curve25519 key exchange for establishing
+            secure session between device and client during provisioning
+
+config SECURITY_POP
+    string "Proof-of-possession"
+    default "1234abcd"
+    help
+	   Proof-of-possession can be optionally used to prove that the device is indeed in possession of the user who is provisioning the device. This proof-of-possession is internally used to generate the shared secret through key exchange.
+
+endmenu
+

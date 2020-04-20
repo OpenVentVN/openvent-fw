@@ -142,6 +142,51 @@ void   vent_data__free_unpacked
   assert(message->base.descriptor == &vent_data__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   vent_config__init
+                     (VentConfig         *message)
+{
+  static const VentConfig init_value = VENT_CONFIG__INIT;
+  *message = init_value;
+}
+size_t vent_config__get_packed_size
+                     (const VentConfig *message)
+{
+  assert(message->base.descriptor == &vent_config__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t vent_config__pack
+                     (const VentConfig *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &vent_config__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t vent_config__pack_to_buffer
+                     (const VentConfig *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &vent_config__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+VentConfig *
+       vent_config__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (VentConfig *)
+     protobuf_c_message_unpack (&vent_config__descriptor,
+                                allocator, len, data);
+}
+void   vent_config__free_unpacked
+                     (VentConfig *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &vent_config__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 void   vent_request__init
                      (VentRequest         *message)
 {
@@ -476,7 +521,45 @@ const ProtobufCMessageDescriptor vent_data__descriptor =
   (ProtobufCMessageInit) vent_data__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor vent_request__field_descriptors[4] =
+static const ProtobufCFieldDescriptor vent_config__field_descriptors[1] =
+{
+  {
+    "mode",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(VentConfig, mode),
+    &working_mode__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned vent_config__field_indices_by_name[] = {
+  0,   /* field[0] = mode */
+};
+static const ProtobufCIntRange vent_config__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor vent_config__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "VentConfig",
+  "VentConfig",
+  "VentConfig",
+  "",
+  sizeof(VentConfig),
+  1,
+  vent_config__field_descriptors,
+  vent_config__field_indices_by_name,
+  1,  vent_config__number_ranges,
+  (ProtobufCMessageInit) vent_config__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor vent_request__field_descriptors[7] =
 {
   {
     "cmd",
@@ -526,17 +609,56 @@ static const ProtobufCFieldDescriptor vent_request__field_descriptors[4] =
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "read_file_request",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(VentRequest, read_file_request),
+    &file_data__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "write_file_request",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(VentRequest, write_file_request),
+    &file_data__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "vent_config_request",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(VentRequest, vent_config_request),
+    &vent_config__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned vent_request__field_indices_by_name[] = {
   1,   /* field[1] = access_key */
   0,   /* field[0] = cmd */
+  4,   /* field[4] = read_file_request */
   2,   /* field[2] = read_firmware_request */
+  6,   /* field[6] = vent_config_request */
+  5,   /* field[5] = write_file_request */
   3,   /* field[3] = write_firmware_request */
 };
 static const ProtobufCIntRange vent_request__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor vent_request__descriptor =
 {
@@ -546,14 +668,14 @@ const ProtobufCMessageDescriptor vent_request__descriptor =
   "VentRequest",
   "",
   sizeof(VentRequest),
-  4,
+  7,
   vent_request__field_descriptors,
   vent_request__field_indices_by_name,
   1,  vent_request__number_ranges,
   (ProtobufCMessageInit) vent_request__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor vent_response__field_descriptors[4] =
+static const ProtobufCFieldDescriptor vent_response__field_descriptors[5] =
 {
   {
     "status",
@@ -592,8 +714,20 @@ static const ProtobufCFieldDescriptor vent_response__field_descriptors[4] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "vent_data_response",
+    "read_file_response",
     4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(VentResponse, read_file_response),
+    &file_data__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "vent_data_response",
+    5,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(VentResponse, n_vent_data_response),
@@ -606,14 +740,15 @@ static const ProtobufCFieldDescriptor vent_response__field_descriptors[4] =
 };
 static const unsigned vent_response__field_indices_by_name[] = {
   1,   /* field[1] = device_info_response */
+  3,   /* field[3] = read_file_response */
   2,   /* field[2] = read_firmware_response */
   0,   /* field[0] = status */
-  3,   /* field[3] = vent_data_response */
+  4,   /* field[4] = vent_data_response */
 };
 static const ProtobufCIntRange vent_response__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor vent_response__descriptor =
 {
@@ -623,7 +758,7 @@ const ProtobufCMessageDescriptor vent_response__descriptor =
   "VentResponse",
   "",
   sizeof(VentResponse),
-  4,
+  5,
   vent_response__field_descriptors,
   vent_response__field_indices_by_name,
   1,  vent_response__number_ranges,
@@ -690,25 +825,29 @@ const ProtobufCEnumDescriptor status__descriptor =
   status__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue command__enum_values_by_number[6] =
+static const ProtobufCEnumValue command__enum_values_by_number[8] =
 {
   { "CmdNone", "COMMAND__CmdNone", 0 },
   { "DeviceInfoRequest", "COMMAND__DeviceInfoRequest", 1 },
   { "VentDataRequest", "COMMAND__VentDataRequest", 2 },
-  { "CheckFirmwareRequest", "COMMAND__CheckFirmwareRequest", 3 },
+  { "VentConfigRequest", "COMMAND__VentConfigRequest", 3 },
   { "WriteFirmwareRequest", "COMMAND__WriteFirmwareRequest", 4 },
   { "ReadFirmwareRequest", "COMMAND__ReadFirmwareRequest", 5 },
+  { "WriteFileRequest", "COMMAND__WriteFileRequest", 6 },
+  { "ReadFileRequest", "COMMAND__ReadFileRequest", 7 },
 };
 static const ProtobufCIntRange command__value_ranges[] = {
-{0, 0},{0, 6}
+{0, 0},{0, 8}
 };
-static const ProtobufCEnumValueIndex command__enum_values_by_name[6] =
+static const ProtobufCEnumValueIndex command__enum_values_by_name[8] =
 {
-  { "CheckFirmwareRequest", 3 },
   { "CmdNone", 0 },
   { "DeviceInfoRequest", 1 },
+  { "ReadFileRequest", 7 },
   { "ReadFirmwareRequest", 5 },
+  { "VentConfigRequest", 3 },
   { "VentDataRequest", 2 },
+  { "WriteFileRequest", 6 },
   { "WriteFirmwareRequest", 4 },
 };
 const ProtobufCEnumDescriptor command__descriptor =
@@ -718,11 +857,43 @@ const ProtobufCEnumDescriptor command__descriptor =
   "Command",
   "Command",
   "",
-  6,
+  8,
   command__enum_values_by_number,
-  6,
+  8,
   command__enum_values_by_name,
   1,
   command__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue working_mode__enum_values_by_number[4] =
+{
+  { "CMV", "WORKING_MODE__CMV", 0 },
+  { "CPAP", "WORKING_MODE__CPAP", 1 },
+  { "VAC", "WORKING_MODE__VAC", 2 },
+  { "TEST", "WORKING_MODE__TEST", 3 },
+};
+static const ProtobufCIntRange working_mode__value_ranges[] = {
+{0, 0},{0, 4}
+};
+static const ProtobufCEnumValueIndex working_mode__enum_values_by_name[4] =
+{
+  { "CMV", 0 },
+  { "CPAP", 1 },
+  { "TEST", 3 },
+  { "VAC", 2 },
+};
+const ProtobufCEnumDescriptor working_mode__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "WorkingMode",
+  "WorkingMode",
+  "WorkingMode",
+  "",
+  4,
+  working_mode__enum_values_by_number,
+  4,
+  working_mode__enum_values_by_name,
+  1,
+  working_mode__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
