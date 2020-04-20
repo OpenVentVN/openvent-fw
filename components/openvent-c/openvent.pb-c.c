@@ -399,7 +399,7 @@ const ProtobufCMessageDescriptor file_data__descriptor =
   (ProtobufCMessageInit) file_data__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor vent_data__field_descriptors[3] =
+static const ProtobufCFieldDescriptor vent_data__field_descriptors[4] =
 {
   {
     "breath_circulating_volumn",
@@ -437,16 +437,29 @@ static const ProtobufCFieldDescriptor vent_data__field_descriptors[3] =
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "timestamp",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(VentData, timestamp),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned vent_data__field_indices_by_name[] = {
   0,   /* field[0] = breath_circulating_volumn */
   2,   /* field[2] = breath_in_time */
   1,   /* field[1] = breathing_frequency */
+  3,   /* field[3] = timestamp */
 };
 static const ProtobufCIntRange vent_data__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 4 }
 };
 const ProtobufCMessageDescriptor vent_data__descriptor =
 {
@@ -456,7 +469,7 @@ const ProtobufCMessageDescriptor vent_data__descriptor =
   "VentData",
   "",
   sizeof(VentData),
-  3,
+  4,
   vent_data__field_descriptors,
   vent_data__field_indices_by_name,
   1,  vent_data__number_ranges,
@@ -581,9 +594,9 @@ static const ProtobufCFieldDescriptor vent_response__field_descriptors[4] =
   {
     "vent_data_response",
     4,
-    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
+    offsetof(VentResponse, n_vent_data_response),
     offsetof(VentResponse, vent_data_response),
     &vent_data__descriptor,
     NULL,
@@ -617,18 +630,48 @@ const ProtobufCMessageDescriptor vent_response__descriptor =
   (ProtobufCMessageInit) vent_response__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCEnumValue status__enum_values_by_number[3] =
+static const ProtobufCEnumValue transport__enum_values_by_number[2] =
+{
+  { "TransportUnknown", "TRANSPORT__TransportUnknown", 0 },
+  { "TransportBLE", "TRANSPORT__TransportBLE", 1 },
+};
+static const ProtobufCIntRange transport__value_ranges[] = {
+{0, 0},{0, 2}
+};
+static const ProtobufCEnumValueIndex transport__enum_values_by_name[2] =
+{
+  { "TransportBLE", 1 },
+  { "TransportUnknown", 0 },
+};
+const ProtobufCEnumDescriptor transport__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "Transport",
+  "Transport",
+  "Transport",
+  "",
+  2,
+  transport__enum_values_by_number,
+  2,
+  transport__enum_values_by_name,
+  1,
+  transport__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue status__enum_values_by_number[4] =
 {
   { "Unknown", "STATUS__Unknown", 0 },
   { "Success", "STATUS__Success", 1 },
   { "Fail", "STATUS__Fail", 2 },
+  { "InvalidAccessKey", "STATUS__InvalidAccessKey", 3 },
 };
 static const ProtobufCIntRange status__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex status__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex status__enum_values_by_name[4] =
 {
   { "Fail", 2 },
+  { "InvalidAccessKey", 3 },
   { "Success", 1 },
   { "Unknown", 0 },
 };
@@ -639,9 +682,9 @@ const ProtobufCEnumDescriptor status__descriptor =
   "Status",
   "Status",
   "",
-  3,
+  4,
   status__enum_values_by_number,
-  3,
+  4,
   status__enum_values_by_name,
   1,
   status__value_ranges,
@@ -650,23 +693,23 @@ const ProtobufCEnumDescriptor status__descriptor =
 static const ProtobufCEnumValue command__enum_values_by_number[6] =
 {
   { "CmdNone", "COMMAND__CmdNone", 0 },
-  { "CmdDeviceInfoRequest", "COMMAND__CmdDeviceInfoRequest", 1 },
-  { "CmdVentDataRequest", "COMMAND__CmdVentDataRequest", 2 },
-  { "CmdCheckFirmwareRequest", "COMMAND__CmdCheckFirmwareRequest", 3 },
-  { "CmdWriteFirmwareRequest", "COMMAND__CmdWriteFirmwareRequest", 4 },
-  { "CmdReadFirmwareRequest", "COMMAND__CmdReadFirmwareRequest", 5 },
+  { "DeviceInfoRequest", "COMMAND__DeviceInfoRequest", 1 },
+  { "VentDataRequest", "COMMAND__VentDataRequest", 2 },
+  { "CheckFirmwareRequest", "COMMAND__CheckFirmwareRequest", 3 },
+  { "WriteFirmwareRequest", "COMMAND__WriteFirmwareRequest", 4 },
+  { "ReadFirmwareRequest", "COMMAND__ReadFirmwareRequest", 5 },
 };
 static const ProtobufCIntRange command__value_ranges[] = {
 {0, 0},{0, 6}
 };
 static const ProtobufCEnumValueIndex command__enum_values_by_name[6] =
 {
-  { "CmdCheckFirmwareRequest", 3 },
-  { "CmdDeviceInfoRequest", 1 },
+  { "CheckFirmwareRequest", 3 },
   { "CmdNone", 0 },
-  { "CmdReadFirmwareRequest", 5 },
-  { "CmdVentDataRequest", 2 },
-  { "CmdWriteFirmwareRequest", 4 },
+  { "DeviceInfoRequest", 1 },
+  { "ReadFirmwareRequest", 5 },
+  { "VentDataRequest", 2 },
+  { "WriteFirmwareRequest", 4 },
 };
 const ProtobufCEnumDescriptor command__descriptor =
 {

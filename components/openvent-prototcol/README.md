@@ -1,1 +1,0 @@
-# Medical Accessories Protocol

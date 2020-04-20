@@ -24,19 +24,25 @@ typedef struct _VentResponse VentResponse;
 
 /* --- enums --- */
 
+typedef enum _Transport {
+  TRANSPORT__TransportUnknown = 0,
+  TRANSPORT__TransportBLE = 1
+    PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(TRANSPORT)
+} Transport;
 typedef enum _Status {
   STATUS__Unknown = 0,
   STATUS__Success = 1,
-  STATUS__Fail = 2
+  STATUS__Fail = 2,
+  STATUS__InvalidAccessKey = 3
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(STATUS)
 } Status;
 typedef enum _Command {
   COMMAND__CmdNone = 0,
-  COMMAND__CmdDeviceInfoRequest = 1,
-  COMMAND__CmdVentDataRequest = 2,
-  COMMAND__CmdCheckFirmwareRequest = 3,
-  COMMAND__CmdWriteFirmwareRequest = 4,
-  COMMAND__CmdReadFirmwareRequest = 5
+  COMMAND__DeviceInfoRequest = 1,
+  COMMAND__VentDataRequest = 2,
+  COMMAND__CheckFirmwareRequest = 3,
+  COMMAND__WriteFirmwareRequest = 4,
+  COMMAND__ReadFirmwareRequest = 5
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(COMMAND)
 } Command;
 
@@ -75,10 +81,11 @@ struct  _VentData
   uint32_t breath_circulating_volumn;
   uint32_t breathing_frequency;
   double breath_in_time;
+  uint32_t timestamp;
 };
 #define VENT_DATA__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&vent_data__descriptor) \
-    , 0, 0, 0 }
+    , 0, 0, 0, 0 }
 
 
 struct  _VentRequest
@@ -100,11 +107,12 @@ struct  _VentResponse
   Status status;
   DeviceInfo *device_info_response;
   FileData *read_firmware_response;
-  VentData *vent_data_response;
+  size_t n_vent_data_response;
+  VentData **vent_data_response;
 };
 #define VENT_RESPONSE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&vent_response__descriptor) \
-    , STATUS__Unknown, NULL, NULL, NULL }
+    , STATUS__Unknown, NULL, NULL, 0,NULL }
 
 
 /* DeviceInfo methods */
@@ -225,6 +233,7 @@ typedef void (*VentResponse_Closure)
 
 /* --- descriptors --- */
 
+extern const ProtobufCEnumDescriptor    transport__descriptor;
 extern const ProtobufCEnumDescriptor    status__descriptor;
 extern const ProtobufCEnumDescriptor    command__descriptor;
 extern const ProtobufCMessageDescriptor device_info__descriptor;
